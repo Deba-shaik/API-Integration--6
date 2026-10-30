@@ -1,0 +1,83 @@
+{
+  "name": "Global Error Handler",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        -96,
+        -32
+      ],
+      "id": "13832bef-a4a2-4957-9963-8ee425f8200d",
+      "name": "Error Trigger"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6901195a-c258-4365-801a-c1c681f5577f",
+              "name": "failedWorkflowId",
+              "value": "={{ $json.workflow.id }}",
+              "type": "string"
+            },
+            {
+              "id": "68fe310c-bb1c-411d-a7e4-45f8f36d77ca",
+              "name": "=failedWorkflowName",
+              "value": "={{ $json.workflow.name }}",
+              "type": "string"
+            },
+            {
+              "id": "1097dcce-8dd0-434e-bdb6-ad9774471b36",
+              "name": "failedNode",
+              "value": "={{ $json.execution.error.nodeName || $json.execution.lastNodeExecuted || 'Unknown Node' }}",
+              "type": "string"
+            },
+            {
+              "id": "9a74b40f-a8bc-49fb-a830-afeee3c6ad56",
+              "name": "errorMessage",
+              "value": "={{ $json.execution.error.message }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        128,
+        -32
+      ],
+      "id": "4deb8f75-602a-487b-952c-81a982b3e24a",
+      "name": "Format Error Alert"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Error Trigger": {
+      "main": [
+        [
+          {
+            "node": "Format Error Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f75e0ead-e375-4296-8acf-c982be78c2cf",
+  "meta": {
+    "instanceId": "a03c7678428ef19ededbf912f16f7d5798ec7b9ab4c17f2a2def6a9e791e7215"
+  },
+  "nodeGroups": [],
+  "id": "Gn5rFxK64wghU456",
+  "tags": []
+}

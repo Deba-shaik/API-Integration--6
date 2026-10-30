@@ -1,0 +1,235 @@
+{
+  "name": "pagination",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -256,
+        -64
+      ],
+      "id": "99cb0132-5457-4fdf-901e-02d2ccd5604b",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "6a2bcf1a-87cc-4565-af2d-3fe4656f63b5",
+              "name": "currentPage",
+              "value": 1,
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        -48,
+        -64
+      ],
+      "id": "06340302-647e-4feb-befa-3d65bfaa2850",
+      "name": "Initialize Page"
+    },
+    {
+      "parameters": {
+        "url": "https://reqres.in/api/users",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "page",
+              "value": "={{ $json.currentPage }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.5,
+      "position": [
+        176,
+        -64
+      ],
+      "id": "82304369-56cf-417b-8091-71e0ff9d87ee",
+      "name": "Fetch User Page"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b53be802-8c8c-48ed-b668-db9c7e3ad1ba",
+              "leftValue": "={{ Number($json.page) }}",
+              "rightValue": "={{ Math.min(Number($json.total_pages), 5) }}",
+              "operator": {
+                "type": "number",
+                "operation": "lt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        416,
+        -64
+      ],
+      "id": "15b21ecd-b2a6-4218-9089-5062b7ed81dc",
+      "name": "Check More Pages"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "591126b5-86b9-46d1-a26d-ec21168a7ed2",
+              "name": "currentPage",
+              "value": "={{ Number($json.page) + 1 }}",
+              "type": "number"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        672,
+        -256
+      ],
+      "id": "1c8bc932-55db-4962-ab76-af4ec5b48a1a",
+      "name": "Increment Page"
+    },
+    {
+      "parameters": {
+        "amount": 1
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        848,
+        -288
+      ],
+      "id": "9a44ae44-5eab-4541-808a-00b1953a4a49",
+      "name": "Wait 1 Second",
+      "webhookId": "e98c3b5b-3698-48b4-95c7-47f76a43733b"
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.noOp",
+      "typeVersion": 1,
+      "position": [
+        640,
+        32
+      ],
+      "id": "c83dc0e6-eb87-40ae-bb7b-4bd333e30722",
+      "name": "Pagination Complete"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Initialize Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Initialize Page": {
+      "main": [
+        [
+          {
+            "node": "Fetch User Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch User Page": {
+      "main": [
+        [
+          {
+            "node": "Check More Pages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check More Pages": {
+      "main": [
+        [
+          {
+            "node": "Increment Page",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pagination Complete",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Increment Page": {
+      "main": [
+        [
+          {
+            "node": "Wait 1 Second",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 1 Second": {
+      "main": [
+        [
+          {
+            "node": "Fetch User Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "Gn5rFxK64wghU456",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "90d3a6ae-9493-4b4c-a6ba-ff408ab3a667",
+  "meta": {
+    "instanceId": "a03c7678428ef19ededbf912f16f7d5798ec7b9ab4c17f2a2def6a9e791e7215"
+  },
+  "nodeGroups": [],
+  "id": "BveouNmJD5hmO0m4",
+  "tags": []
+}
